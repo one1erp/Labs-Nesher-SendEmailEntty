@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Common;
 using DAL;
-using Microsoft.Office.Interop.Outlook;
 using Attachment = System.Net.Mail.Attachment;
 using Exception = System.Exception;
 
@@ -28,6 +28,8 @@ namespace SendEmailEntty
         /// 
         public static void SendEmail(string coaReportId, bool directly)
         {
+            Debugger.Launch();
+
             //not used???
             var dal = new DataLayer();
             dal.Connect();
@@ -46,7 +48,7 @@ namespace SendEmailEntty
 
                 mailDetails = new MailDetails();
 
-                SetMailDetails(mailDetails, emailParam, labName);
+                SetMailDetails(mailDetails, emailParam, labName, currentCoa);
 
                 foreach (var email in emailsTo)
                 {
@@ -89,6 +91,8 @@ namespace SendEmailEntty
 
         public static void SendMultepleCOA(List<string> coaReportIdList, bool bckgrndSend)
         {
+            Debugger.Launch();
+
             COA_Report coa = null;
             var dal = new DataLayer();
             dal.Connect();
@@ -114,11 +118,14 @@ namespace SendEmailEntty
                 listOfAtach.Add(document);
             }
             string[] emailsTo = emails.Split(';');
+
+            //aaaaaaaaaaaa
             emailsTo = emailsTo.Distinct().ToArray();
             var emailParam = dal.GetPhraseByName(PHRASE_NAME);
 
+         
 
-            SetMailDetails(mailDetails, emailParam, labName);
+            SetMailDetails(mailDetails, emailParam, labName, coa);
 
             foreach (var email in emailsTo)
             {
@@ -172,10 +179,8 @@ namespace SendEmailEntty
         }
 
 
-        private static void SetMailDetails(MailDetails mailDetails, PhraseHeader emailParam, string labName)
+        private static void SetMailDetails(MailDetails mailDetails, PhraseHeader emailParam, string labName, COA_Report currentCoa)
         {
-
-
 
 
             mailDetails.UserName = (from smtp in emailParam.PhraseEntries
@@ -190,7 +195,13 @@ namespace SendEmailEntty
             mailDetails.SmtpClient = (from smtp in emailParam.PhraseEntries
                                       where smtp.PhraseName == "exchange server"
                                       select smtp.PhraseDescription).FirstOrDefault();
-            mailDetails.Subject = "המכון למקרוביולוגיה";
+
+            //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+            //mailDetails.Subject = "המכון למקרוביולוגיה";
+
+            HeaderDetails mailDetailsHeader = CreateAndSetHeaderDtls(currentCoa.Sdg);              
+            mailDetails.Subject = mailDetailsHeader.ToString();
+
 
             mailDetails.FromAddress = (from smtp in emailParam.PhraseEntries
                                        where smtp.PhraseName == "FromFile_" + labName
@@ -202,6 +213,19 @@ namespace SendEmailEntty
             if (cc != null)
                 mailDetails.CC.Add(cc);
         }
+
+        private static HeaderDetails CreateAndSetHeaderDtls(Sdg currentSdg)
+        {
+            return new HeaderDetails
+            {
+                OrderName = currentSdg?.Name,
+                CoaName = currentSdg?.ExternalReference,
+                ClientId = currentSdg?.SDG_USER?.FirstOrDefault()?.U_COA_FILE,
+                FirstSampleDetails = currentSdg?.Samples?.FirstOrDefault()?.Description
+            };
+
+        }
+
 
 
         static bool IsValidEmail(string email)

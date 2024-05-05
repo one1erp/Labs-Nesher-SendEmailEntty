@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -27,8 +28,11 @@ namespace SendEmailEntty
             Utils.CreateConstring(ntlsCon);
             var CoaIds = new List<string>();
 
+
+
             while (!records.EOF)
             {
+
                 var CoaId = records.Fields["U_COA_REPORT_ID"].Value;
                 CoaIds.Add(CoaId);
                 records.MoveNext();
@@ -67,6 +71,8 @@ namespace SendEmailEntty
                 Utils.CreateConstring(ntlsCon);
 
                 var CoaIds = new List<string>();
+
+
 
                 while (!records.EOF)
                 {
