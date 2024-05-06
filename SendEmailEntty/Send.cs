@@ -28,7 +28,6 @@ namespace SendEmailEntty
         /// 
         public static void SendEmail(string coaReportId, bool directly)
         {
-            Debugger.Launch();
 
             //not used???
             var dal = new DataLayer();
@@ -218,9 +217,10 @@ namespace SendEmailEntty
             {
                 OrderName = currentSdg?.Name,
                 ExternalRef = currentSdg?.ExternalReference,
-                CoaFile = currentSdg?.SDG_USER?.FirstOrDefault()?.U_COA_FILE,
+                CoaFile = currentSdg?.U_COA_FILE,
                 FirstSampleDetails = currentSdg?.Samples?.FirstOrDefault()?.Description
             };
+
 
         }
 

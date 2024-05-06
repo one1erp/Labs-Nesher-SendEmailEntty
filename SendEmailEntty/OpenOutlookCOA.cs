@@ -1,14 +1,12 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using Common;
+﻿using Common;
 using DAL;
 using LSEXT;
 using LSSERVICEPROVIDERLib;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace SendEmailEntty
 {

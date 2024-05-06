@@ -84,10 +84,9 @@
     <ProjectReference Include="..\..\General\Common\Common.csproj">
       <Project>{A60242B9-5382-4A90-91F8-F390DA706AE7}</Project>
       <Name>Common</Name>
-      <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\General\DAL\DAL.csproj">
-      <Project>{fb002602-1b33-465b-9414-ad1a8fe98325}</Project>
+      <Project>{FB002602-1B33-465B-9414-AD1A8FE98325}</Project>
       <Name>DAL</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\One1.Controls\One1.Controls\One1.Controls.csproj">
