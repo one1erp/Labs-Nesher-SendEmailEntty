@@ -91,7 +91,6 @@ namespace SendEmailEntty
 
         public static void SendMultepleCOA(List<string> coaReportIdList, bool bckgrndSend)
         {
-            Debugger.Launch();
 
             COA_Report coa = null;
             var dal = new DataLayer();
@@ -119,7 +118,7 @@ namespace SendEmailEntty
             }
             string[] emailsTo = emails.Split(';');
 
-            //aaaaaaaaaaaa
+
             emailsTo = emailsTo.Distinct().ToArray();
             var emailParam = dal.GetPhraseByName(PHRASE_NAME);
 
@@ -196,9 +195,6 @@ namespace SendEmailEntty
                                       where smtp.PhraseName == "exchange server"
                                       select smtp.PhraseDescription).FirstOrDefault();
 
-            //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-            //mailDetails.Subject = "המכון למקרוביולוגיה";
-
             HeaderDetails mailDetailsHeader = CreateAndSetHeaderDtls(currentCoa.Sdg);              
             mailDetails.Subject = mailDetailsHeader.ToString();
 
@@ -211,7 +207,9 @@ namespace SendEmailEntty
                       where smtp.PhraseName == "CC_" + labName
                       select smtp.PhraseDescription).FirstOrDefault();
             if (cc != null)
+            {
                 mailDetails.CC.Add(cc);
+            }
         }
 
         private static HeaderDetails CreateAndSetHeaderDtls(Sdg currentSdg)
@@ -219,8 +217,8 @@ namespace SendEmailEntty
             return new HeaderDetails
             {
                 OrderName = currentSdg?.Name,
-                CoaName = currentSdg?.ExternalReference,
-                ClientId = currentSdg?.SDG_USER?.FirstOrDefault()?.U_COA_FILE,
+                ExternalRef = currentSdg?.ExternalReference,
+                CoaFile = currentSdg?.SDG_USER?.FirstOrDefault()?.U_COA_FILE,
                 FirstSampleDetails = currentSdg?.Samples?.FirstOrDefault()?.Description
             };
 
@@ -241,6 +239,21 @@ namespace SendEmailEntty
             }
         }
 
+
+
+    }
+    public class HeaderDetails
+    {
+        public string OrderName { get; set; }
+        public string ExternalRef { get; set; }
+        public string CoaFile { get; set; }
+        public string FirstSampleDetails { get; set; }
+
+
+        public override string ToString()
+        {
+            return string.Join(" - ", new[] { OrderName, ExternalRef, CoaFile, FirstSampleDetails }.Where(s => !string.IsNullOrEmpty(s)));
+        }
 
 
     }
